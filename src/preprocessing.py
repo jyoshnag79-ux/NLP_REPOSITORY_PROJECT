@@ -50,7 +50,7 @@ def lowercase_text(text: str) -> str:
     # ============================================================
     # BEGIN STUDENT CORE 1.1
     # Implement only this educational core; surrounding setup stays provided.
-    raise NotImplementedError('STUDENT TODO 1.1: implement this exercise in the marked core; see docs/STUDENT_GUIDE.md.')
+    return text.lower()
     # END STUDENT CORE 1.1
 
 
@@ -71,7 +71,10 @@ def remove_punctuation(text: str) -> str:
     # ============================================================
     # BEGIN STUDENT CORE 1.2
     # Implement only this educational core; surrounding setup stays provided.
-    raise NotImplementedError('STUDENT TODO 1.2: implement this exercise in the marked core; see docs/STUDENT_GUIDE.md.')
+    characters = []
+    for character in text:
+        characters.append(" " if _is_punctuation(character) else character)
+    return "".join(characters)
     # END STUDENT CORE 1.2
 
 
@@ -92,7 +95,7 @@ def tokenize_words(text: str) -> list[str]:
     # ============================================================
     # BEGIN STUDENT CORE 1.3
     # Implement only this educational core; surrounding setup stays provided.
-    raise NotImplementedError('STUDENT TODO 1.3: implement this exercise in the marked core; see docs/STUDENT_GUIDE.md.')
+    return wordpunct_tokenize(text)
     # END STUDENT CORE 1.3
 
 
@@ -122,7 +125,7 @@ def remove_stopwords(
     # ============================================================
     # BEGIN STUDENT CORE 1.4
     # Implement only this educational core; surrounding setup stays provided.
-    raise NotImplementedError('STUDENT TODO 1.4: implement this exercise in the marked core; see docs/STUDENT_GUIDE.md.')
+    return [token for token in tokens if token.lower() not in stopword_set]
     # END STUDENT CORE 1.4
 
 
@@ -143,7 +146,7 @@ def stem_words(tokens: Sequence[str]) -> list[str]:
     # ============================================================
     # BEGIN STUDENT CORE 1.5
     # Implement only this educational core; surrounding setup stays provided.
-    raise NotImplementedError('STUDENT TODO 1.5: implement this exercise in the marked core; see docs/STUDENT_GUIDE.md.')
+    return [stemmer.stem(token) for token in tokens]
     # END STUDENT CORE 1.5
 
 
@@ -172,7 +175,7 @@ def lemmatize_words(tokens: Sequence[str], pos: str = "n") -> list[str]:
     try:
         # BEGIN STUDENT CORE 1.6
         # Implement only this educational core; surrounding setup stays provided.
-        raise NotImplementedError('STUDENT TODO 1.6: implement this exercise in the marked core; see docs/STUDENT_GUIDE.md.')
+        return [lemmatizer.lemmatize(token, pos=pos) for token in tokens]
         # END STUDENT CORE 1.6
     except LookupError as error:
         raise NLTKResourceError(
@@ -197,7 +200,7 @@ def build_vocabulary(tokens: Sequence[str]) -> list[str]:
     # ============================================================
     # BEGIN STUDENT CORE 1.7 — vocabulary
     # Implement only this educational core; surrounding setup stays provided.
-    raise NotImplementedError('STUDENT TODO 1.7 — vocabulary: implement this exercise in the marked core; see docs/STUDENT_GUIDE.md.')
+    return sorted(set(tokens))
     # END STUDENT CORE 1.7 — vocabulary
 
 
@@ -218,9 +221,10 @@ def calculate_word_frequencies(tokens: Sequence[str]) -> dict[str, int]:
     # ============================================================
     # BEGIN STUDENT CORE 1.7 — frequency
     # Implement only this educational core; surrounding setup stays provided.
-    raise NotImplementedError('STUDENT TODO 1.7 — frequency: implement this exercise in the marked core; see docs/STUDENT_GUIDE.md.')
-    # END STUDENT CORE 1.7 — frequency
-
+    counts = {}
+    for token in tokens:
+        counts[token] = counts.get(token, 0) + 1
+    return dict(sorted(counts.items()))
 
 def tag_parts_of_speech(tokens: Sequence[str]) -> list[tuple[str, str]]:
     """Starter-provided optional POS demonstration; not a student TODO."""
