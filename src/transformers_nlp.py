@@ -41,7 +41,7 @@ def calculate_attention_scores(query, keys):
     # Expected: one score per key. Hint: calculate a dot product for each row.
     # BEGIN STUDENT CORE 8.1
     # Implement only this educational core; surrounding setup stays provided.
-    raise NotImplementedError('STUDENT TODO 8.1: implement this exercise in the marked core; see docs/STUDENT_GUIDE.md.')
+    scores = np.array([np.dot(query, key) for key in keys])
     # END STUDENT CORE 8.1
     if not np.isfinite(scores).all():
         raise ValueError("Dot products overflowed; use smaller finite vectors.")
@@ -64,7 +64,10 @@ def softmax_attention_weights(scores):
     # Expected: weights summing to one. Hint: shift by the maximum first.
     # BEGIN STUDENT CORE 8.2
     # Implement only this educational core; surrounding setup stays provided.
-    raise NotImplementedError('STUDENT TODO 8.2: implement this exercise in the marked core; see docs/STUDENT_GUIDE.md.')
+    with np.errstate(over="ignore", under="ignore"):
+        shifted_scores = scores - np.max(scores)
+        exponentials = np.exp(shifted_scores)
+    weights = exponentials / np.sum(exponentials)
     # END STUDENT CORE 8.2
     return weights
 
@@ -89,7 +92,9 @@ def calculate_weighted_context(weights, values):
     # Expected: one vector with the value dimension. Hint: add weighted rows.
     # BEGIN STUDENT CORE 8.3
     # Implement only this educational core; surrounding setup stays provided.
-    raise NotImplementedError('STUDENT TODO 8.3: implement this exercise in the marked core; see docs/STUDENT_GUIDE.md.')
+    context = np.zeros(values.shape[1])
+    for weight, value in zip(weights, values):
+        context += weight * value
     # END STUDENT CORE 8.3
     if not np.isfinite(context).all():
         raise ValueError("Weighted sum overflowed; use smaller values.")

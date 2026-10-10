@@ -29,7 +29,10 @@ def format_source_block(chunk, source_number):
     # Hint: Markdown page is N/A; PDF page is its physical number.
     # BEGIN STUDENT CORE 12.2
     # Implement only this educational core; surrounding setup stays provided.
-    raise NotImplementedError('STUDENT TODO 12.2: implement this exercise in the marked core; see docs/STUDENT_GUIDE.md.')
+    page = 'N/A' if chunk['page_number'] is None else str(chunk['page_number'])
+    return (f"[SOURCE {source_number}]\nDocument: {chunk['document_title']}\n"
+            f"Document ID: {chunk['document_id']}\nChunk ID: {chunk['chunk_id']}\n"
+            f"Page: {page}\n\n" + chunk['text'])
     # END STUDENT CORE 12.2
 
 
@@ -46,7 +49,8 @@ def build_context(retrieved_chunks):
     # Hint: label each selected item using the shared source-block function.
     # BEGIN STUDENT CORE 12.1
     # Implement only this educational core; surrounding setup stays provided.
-    raise NotImplementedError('STUDENT TODO 12.1: implement this exercise in the marked core; see docs/STUDENT_GUIDE.md.')
+    blocks = [format_source_block(chunk, number) for number, chunk in enumerate(retrieved_chunks, start=1)]
+    return '\n\n---\n\n'.join(blocks)
     # END STUDENT CORE 12.1
 
 
@@ -94,7 +98,10 @@ def build_grounded_prompt(question, context):
     # Hint: use the provided rules and explicit beginning/end evidence markers.
     # BEGIN STUDENT CORE 12.3
     # Implement only this educational core; surrounding setup stays provided.
-    raise NotImplementedError('STUDENT TODO 12.3: implement this exercise in the marked core; see docs/STUDENT_GUIDE.md.')
+    evidence = context if context else '[NO RETRIEVED EVIDENCE]'
+    return (f"INSTRUCTIONS\n{GROUNDING_INSTRUCTIONS}\n\n"
+            f"CONTEXT\n<BEGIN_EVIDENCE>\n{evidence}\n<END_EVIDENCE>\n\n"
+            f"QUESTION\n{question}\n\nANSWER\n")
     # END STUDENT CORE 12.3
 
 

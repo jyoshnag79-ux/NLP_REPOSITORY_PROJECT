@@ -76,7 +76,10 @@ def normalize_question_text(text):
     # Hint: casefold, replace separators, then collapse whitespace.
     # BEGIN STUDENT CORE 14.1
     # Implement only this educational core; surrounding setup stays provided.
-    raise NotImplementedError('STUDENT TODO 14.1: implement this exercise in the marked core; see docs/STUDENT_GUIDE.md.')
+    normalized=unicodedata.normalize('NFKC',text).casefold()
+    normalized=re.sub(r'[^\w\s]|_', ' ',normalized)
+    normalized=re.sub(r'\btfidf\b','tf idf',normalized)
+    return ' '.join(normalized.split())
     # END STUDENT CORE 14.1
 
 
@@ -122,7 +125,13 @@ def match_question_topics(text,taxonomy):
     # Hint: word boundaries, narrow topics first, longer phrase, taxonomy ties.
     # BEGIN STUDENT CORE 14.2
     # Implement only this educational core; surrounding setup stays provided.
-    raise NotImplementedError('STUDENT TODO 14.2: implement this exercise in the marked core; see docs/STUDENT_GUIDE.md.')
+    matches=[]
+    for rule in rules:
+        for occurrence in re.finditer(rule['pattern'],normalized):
+            matches.append({**{k:v for k,v in rule.items() if k!='pattern'},
+                            'matched_phrase':occurrence.group(),'start':occurrence.start(),'end':occurrence.end()})
+    ordered=sorted(matches,key=lambda m:(-m['specificity'],-m['phrase_words'],m['taxonomy_order'],m['start'],m['match_type']!='canonical'))
+    primary=ordered[0] if ordered else None
     # END STUDENT CORE 14.2
     topics=list(dict.fromkeys(m['topic_id'] for m in ordered))
     tied=list(dict.fromkeys(m['topic_id'] for m in ordered if primary and
@@ -149,7 +158,9 @@ def count_topic_frequencies(questions,taxonomy):
     # Hint: initialize counts, then increment the primary key once per record.
     # BEGIN STUDENT CORE 14.3
     # Implement only this educational core; surrounding setup stays provided.
-    raise NotImplementedError('STUDENT TODO 14.3: implement this exercise in the marked core; see docs/STUDENT_GUIDE.md.')
+    for question in questions:
+        counts[question['primary_topic']]+=1
+    return counts
     # END STUDENT CORE 14.3
 
 
@@ -169,7 +180,8 @@ def rank_topics(counts,taxonomy):
     # Hint: negative count sorts descending; taxonomy position breaks ties.
     # BEGIN STUDENT CORE 14.4
     # Implement only this educational core; surrounding setup stays provided.
-    raise NotImplementedError('STUDENT TODO 14.4: implement this exercise in the marked core; see docs/STUDENT_GUIDE.md.')
+    topics=sorted((topic for topic in counts if topic!=UNMATCHED),key=lambda topic:(-counts[topic],order[topic]))
+    return [{'rank':i,'topic_id':topic,'topic_name':names[topic],'count':counts[topic]} for i,topic in enumerate(topics,1)]
     # END STUDENT CORE 14.4
 
 
@@ -182,7 +194,8 @@ def filter_questions_by_topic(questions,topic_id,taxonomy,*,include_secondary=Fa
     # Hint: primary equality; optional explicit secondary-match membership.
     # BEGIN STUDENT CORE 14.5
     # Implement only this educational core; surrounding setup stays provided.
-    raise NotImplementedError('STUDENT TODO 14.5: implement this exercise in the marked core; see docs/STUDENT_GUIDE.md.')
+    return [dict(q) for q in questions if q['primary_topic']==topic_id or
+            (include_secondary and topic_id in q['matched_topics'])]
     # END STUDENT CORE 14.5
 
 

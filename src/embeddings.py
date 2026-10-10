@@ -33,7 +33,8 @@ def prepare_tokenized_sentences(sentences: Sequence[str]) -> list[list[str]]:
     # Expected: Non-empty token lists. Hint: apply the three existing operations.
     # BEGIN STUDENT CORE 5.1
     # Implement only this educational core; surrounding setup stays provided.
-    raise NotImplementedError('STUDENT TODO 5.1: implement this exercise in the marked core; see docs/STUDENT_GUIDE.md.')
+    tokenized = [tokenize_words(remove_punctuation(lowercase_text(text))) for text in sentences]
+    return [tokens for tokens in tokenized if tokens]
     # END STUDENT CORE 5.1
 
 
@@ -68,7 +69,9 @@ def train_word2vec(tokenized_sentences, vector_size=DEFAULT_WORD2VEC["vector_siz
     # Expected: Trained Word2Vec model. Hint: pass sentence lists and architecture sg.
     # BEGIN STUDENT CORE 5.2
     # Implement only this educational core; surrounding setup stays provided.
-    raise NotImplementedError('STUDENT TODO 5.2: implement this exercise in the marked core; see docs/STUDENT_GUIDE.md.')
+    return Word2Vec(sentences=tokenized_sentences, vector_size=vector_size, window=window,
+                    min_count=min_count, sg=sg, epochs=epochs, seed=seed,
+                    hashfxn=_stable_hash, **TRAINING_SETTINGS)
     # END STUDENT CORE 5.2
 
 
@@ -87,7 +90,7 @@ def get_word_vector(model, word: str) -> list[float]:
     # Expected: vector_size finite floats. Hint: word indexing uses model.wv.
     # BEGIN STUDENT CORE 5.3
     # Implement only this educational core; surrounding setup stays provided.
-    raise NotImplementedError('STUDENT TODO 5.3: implement this exercise in the marked core; see docs/STUDENT_GUIDE.md.')
+    return model.wv[word].tolist()
     # END STUDENT CORE 5.3
 
 
@@ -104,7 +107,7 @@ def find_similar_words(model, word: str, top_n: int = 5) -> list[tuple[str, floa
     # Expected: (word, cosine) pairs. Hint: use the keyed-vector nearest-word method.
     # BEGIN STUDENT CORE 5.4
     # Implement only this educational core; surrounding setup stays provided.
-    raise NotImplementedError('STUDENT TODO 5.4: implement this exercise in the marked core; see docs/STUDENT_GUIDE.md.')
+    return model.wv.most_similar(word, topn=count)
     # END STUDENT CORE 5.4
 
 
@@ -117,8 +120,8 @@ def calculate_word_similarity(model, word_a: str, word_b: str) -> float:
     # Expected: Manual cosine, approximately Gensim's similarity.
     # Hint: the representation changed, not the comparison formula.
     # BEGIN STUDENT CORE 5.5
-    # Implement only this educational core; surrounding setup stays provided.
-    raise NotImplementedError('STUDENT TODO 5.5: implement this exercise in the marked core; see docs/STUDENT_GUIDE.md.')
+    # Implement only this educational core; surrounding setup stays provided.raise NotImplementedError('STUDENT TODO 5.5: implement this exercise in the marked core; see docs/STUDENT_GUIDE.md.')
+    return cosine_similarity(vector_a, vector_b)
     # END STUDENT CORE 5.5
 
 
@@ -165,7 +168,8 @@ def encode_sentences(model, sentences: Sequence[str]):
     # Hint: use the provided model's batch encoder, not Word2Vec or token lists.
     # BEGIN STUDENT CORE 6.1
     # Implement only this educational core; surrounding setup stays provided.
-    raise NotImplementedError('STUDENT TODO 6.1: implement this exercise in the marked core; see docs/STUDENT_GUIDE.md.')
+    vectors = model.encode(list(sentences), batch_size=32, show_progress_bar=False,
+                           convert_to_numpy=True, normalize_embeddings=False)
     # END STUDENT CORE 6.1
     if vectors.shape != (len(sentences), EMBEDDING_DIMENSION) or not np.isfinite(vectors).all():
         raise ValueError("The shared encoder must return finite N × 384 embeddings.")
@@ -180,7 +184,10 @@ def sentence_similarity(model, sentence_a: str, sentence_b: str) -> float:
     # Hint: batch the two texts, take the two rows, reuse existing manual cosine.
     # BEGIN STUDENT CORE 6.2
     # Implement only this educational core; surrounding setup stays provided.
-    raise NotImplementedError('STUDENT TODO 6.2: implement this exercise in the marked core; see docs/STUDENT_GUIDE.md.')
+    embeddings = encode_sentences(model, [sentence_a, sentence_b])
+    vector_a = embeddings[0].tolist()
+    vector_b = embeddings[1].tolist()
+    return cosine_similarity(vector_a, vector_b)
     # END STUDENT CORE 6.2
 
 
